@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Relatórios</title>
+    <style>
+        /* Estilos Gerais */
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; overflow: hidden; background-color: #f3f2f1; }
+        
+        /* Menu Lateral (Sidebar) */
+        .sidebar { width: 260px; background-color: #253039; color: white; display: flex; flex-direction: column; box-shadow: 2px 0 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .logo-area { padding: 20px; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #3d4c53; text-align: center; background-color: #1e262c; }
+        .menu-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; }
+        .menu-item { border-bottom: 1px solid #334049; }
+        .menu-button { width: 100%; background: none; border: none; padding: 15px 20px; color: #d0d0d0; text-align: left; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+        .menu-button:hover { background-color: #334049; color: white; padding-left: 25px; }
+        .menu-button.active { background-color: #e6ad1e; color: #1e262c; font-weight: bold; } /* Cor amarela de destaque */
+
+        /* Área Principal */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; height: 100%; }
+        .header { background-color: white; padding: 15px 30px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+        .report-title { font-size: 1.2rem; font-weight: 600; color: #333; }
+        
+        /* Container do Relatório */
+        .report-container { flex-grow: 1; padding: 0; background: #eaeaee; position: relative; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+        
+        /* Aviso inicial */
+        .placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 1.1rem; }
+
+        /* Responsivo para celular */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; max-height: 200px; }
+            .logo-area { padding: 10px; }
+            .menu-button { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">📊 Portal de Dados</div>
+        <ul class="menu-list">
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link1')">Painel Principal</button></li>
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link2')">Time Felipe</button></li>
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link3')">Time Raphael</button></li>
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link4')">Individualizado por Corretor</button></li>
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link5')">Clube dos Milhões</button></li>
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link6')">Lançamentos</button></li>
+            <li class="menu-item"><button class="menu-button" onclick="carregarRelatorio(this, 'link7')">Relatório Geral</button></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="report-title" id="tituloRelatorio">Selecione um relatório</div>
+            <div style="font-size: 0.8rem; color: #666;">Atualizado automaticamente via Power BI</div>
+        </div>
+        <div class="report-container">
+            <iframe id="powerbi-frame" src="" allowFullScreen="true"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO: COLE SEUS LINKS DO POWER BI AQUI DENTRO DAS ASPAS
+        const relatorios = {
+            'link1': 'https://app.powerbi.com/view?r=eyJrIjoiMDVhZDkwZjMtMmU5ZS00YjhjLWFhYjMtMDJjY2E4ZTAzYzA4IiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9',
+            'link2': 'https://app.powerbi.com/view?r=eyJrIjoiYjNiNmUzMzktNjliZi00ZjhmLTkzZTItZWVjNGM1NDZkNTQ3IiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9',
+            'link3': 'https://app.powerbi.com/view?r=eyJrIjoiZmJkYWRiNDItMGIyZC00OWM5LTgyMTUtN2ZjOTc3NTExOGRkIiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9',
+            'link4': 'https://app.powerbi.com/view?r=eyJrIjoiNmQwM2NiN2QtMjA0Mi00Njk3LWI0YWUtNDlkODQ1YzUwYzg1IiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9',
+            'link5': 'https://app.powerbi.com/view?r=eyJrIjoiMjE1NDM3NDUtZjNjMC00Yzc5LWJlM2UtNTZkMGY2YWRjOGY1IiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9',
+            'link6': 'https://app.powerbi.com/view?r=eyJrIjoiZjdiNTQ0MjMtNGY0Ny00ZGRiLWJkMzktMGRhYjJlNTExYTZhIiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9',
+            'link7': 'https://app.powerbi.com/view?r=eyJrIjoiNzYyZTAyYjQtYzg1NC00YmUzLWJlNzMtZDQ5MWUyN2I2NjBhIiwidCI6ImY4NmUxMjhkLWYzMjYtNDA5ZC04OWZkLTgyNGMzZTI4NDliMyJ9'
+        };
+
+        function carregarRelatorio(botao, idLink) {
+            // 1. Remove a classe 'active' de todos os botões
+            const botoes = document.querySelectorAll('.menu-button');
+            botoes.forEach(btn => btn.classList.remove('active'));
+
+            // 2. Adiciona 'active' no botão clicado
+            botao.classList.add('active');
+
+            // 3. Muda o título no topo
+            document.getElementById('tituloRelatorio').innerText = botao.innerText;
+
+            // 4. Carrega o link correto no iframe
+            const url = relatorios[idLink];
+            const iframe = document.getElementById('powerbi-frame');
+            
+            if (url && url.includes('http')) {
+                iframe.src = url;
+            } else {
+                alert("Link não configurado. Edite o arquivo index.html e cole o link do Power BI.");
+            }
+        }
+
+        // (Opcional) Carregar o primeiro relatório automaticamente ao abrir a página
+        // Descomente a linha abaixo se quiser que o "Painel" já abra carregado
+        // document.querySelector('.menu-button').click();
+    </script>
+</body>
+</html>
